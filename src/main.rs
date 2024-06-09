@@ -1,8 +1,20 @@
-use rand::{distributions::Alphanumeric, Rng};
+// use rand::{distributions::Alphanumeric, Rng};
 use std::io;
 use std::io::Write;
 use std::time::Duration;
 use std::thread;
+use std::process::Command;
+use rand::RngCore;
+use base64::Engine as _;
+
+fn validate() {
+    let url = input("Url: ");
+    Command::new("python3")
+        .arg("validator/if_valid.py")
+        .arg(url)
+        .spawn()
+        .expect("can't launch validator");
+}
 
 fn input(prompt: &str) -> String {
     // print prompt 
@@ -26,7 +38,7 @@ fn parse_string(input_str: &String) -> Vec<&str> {
 
     split_str
 }
-
+/*
 fn generate(times: u32) -> String {
     let mut nitro_url: String = "https://discord.gift/".to_owned();
 
@@ -42,16 +54,31 @@ fn generate(times: u32) -> String {
     let final_link: String = format!("{nitro_url}{dat}");
     final_link
 }
+*/
+
+
+fn generate() -> String {
+    // Generate 16 random bytes
+    let mut random_bytes = [0u8; 16];
+    rand::thread_rng().fill_bytes(&mut random_bytes);
+    
+    // Encode the bytes in base64 (URL-safe, without padding)
+    let encoded = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(&random_bytes);
+    
+    // Construct the final Nitro link
+    format!("https://discord.gift/{}", encoded)
+}
 
 fn manage_command(tokens: Vec<&str>) {
     if tokens.len() == 0 {
         println!("erm");
     }
 
-    let y: u32 = tokens[1].parse().unwrap();
+    // let z: &str = tokens[1];
 
     match tokens[0] {
         "generate" => {
+            let y: u32 = tokens[1].parse().unwrap();
             if tokens[1..].len() > 1 {
                 println!("generate: only need one argument");
             }
@@ -68,11 +95,11 @@ fn manage_command(tokens: Vec<&str>) {
                     }
                     for n in 1..=y {
                         if y > 15 {
-                            let link = generate(y);
+                            let link = generate();
                             thread::sleep(Duration::from_millis(1000));
                             println!("{}", link);
                         } else {
-                            let link = generate(y);
+                            let link = generate();
                             println!("{}", link);
                         }
                     }
@@ -80,17 +107,12 @@ fn manage_command(tokens: Vec<&str>) {
             }
         },
         "validate" => {
+            /*
             if tokens[1..].len() > 1 {
                 println!("validate: only need one argument");
-            } 
-            match tokens[1] {
-                " " => {
-                    println!("wtf?");
-                },
-                _ => {
-                    todo!();
-                },
-            }
+            } */
+
+            validate();
         },
         _ => {
             println!("command doesnt exist");
@@ -100,7 +122,7 @@ fn manage_command(tokens: Vec<&str>) {
 
 fn main() {
     println!("│ \x1b[38;2;112;145;255mdiscord nitro generator and validator\x1b[0m");
-    println!("│ \x1b[38;2;128;128;128mwritten by\x1b[0m (  ) gushtichudi");
+    println!("│ \x1b[38;2;128;128;128mwritten by\x1b[0m  gushtichudi");
     println!("│ \x1b[38;2;112;145;255m\x1b[0m : lvinkjhor.  : journalctl__ 󰊫 : chudaomaa00@gmail.com");
     println!("\ntype `help` for help.\n");
 
