@@ -58,19 +58,14 @@ fn generate(times: u32) -> String {
 
 
 fn generate() -> String {
-    // Generate 16 random bytes
     let mut random_bytes = [0u8; 16];
-    rand::thread_rng().fill_bytes(&mut random_bytes);
-    
-    // Encode the bytes in base64 (URL-safe, without padding)
-    let encoded = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(&random_bytes);
-    
-    // Construct the final Nitro link
+    rand::thread_rng().fill_bytes(&mut random_bytes); 
+    let encoded = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(&random_bytes);    
     format!("https://discord.gift/{}", encoded)
 }
 
 fn manage_command(tokens: Vec<&str>) {
-    if tokens.len() == 0 {
+    if tokens.len() != 1 {
         println!("erm");
     }
 
@@ -79,6 +74,9 @@ fn manage_command(tokens: Vec<&str>) {
     match tokens[0] {
         "generate" => {
             let y: u32 = tokens[1].parse().unwrap();
+            if tokens.len() != 2 {
+                println!("bro :(");
+            }
             if tokens[1..].len() > 1 {
                 println!("generate: only need one argument");
             }
@@ -91,12 +89,12 @@ fn manage_command(tokens: Vec<&str>) {
                 },
                 _ => {
                     if y > 15 {
-                    println!("[!] \x1b[38;2;255;235;112mwarning\x1b[0m: number bigger than 15 inputted, delaying generations by 1 second");
+                    println!("[!] \x1b[38;2;255;235;112mwarning\x1b[0m: number bigger than 15 inputted, delaying generations by 0.25 second");
                     }
-                    for n in 1..=y {
+                    for _n in 1..=y {
                         if y > 15 {
                             let link = generate();
-                            thread::sleep(Duration::from_millis(1000));
+                            // thread::sleep(Duration::from_millis(250));
                             println!("{}", link);
                         } else {
                             let link = generate();

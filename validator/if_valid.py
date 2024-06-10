@@ -15,6 +15,8 @@ except ModuleNotFoundError:
 
 import requests as r
 
+
+
 def validate(url):
     print(f"[i] {c.fore}{c.gry}validating {c.fore}{c.blu}{url}...{c.end}")
     try:
@@ -25,6 +27,7 @@ def validate(url):
             sys.exit(0)
         else:
             print(f"[!!!] {c.fore}{c.red}nah{c.end}")
+            print(f"[i] {c.fore}{c.gry}site returned{c.fore}{c.red}{url_status.status_code}{c.end}")
             sys.exit(1)
     except Exception as e:
         print(f"[!!!] {c.fore}{c.red}nah smth wrong onsk{c.end}")
